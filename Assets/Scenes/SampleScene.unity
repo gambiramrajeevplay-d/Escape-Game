@@ -830,7 +830,7 @@ Transform:
   - {fileID: 851828514}
   - {fileID: 1651405918}
   m_Father: {fileID: 2709927709663907199}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &611795106
 GameObject:
@@ -2438,51 +2438,6 @@ Transform:
   m_Father: {fileID: 2119238063}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1631819547
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1631819548}
-  - component: {fileID: 1631819550}
-  m_Layer: 0
-  m_Name: CheckPoint
-  m_TagString: CheckPoint
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1631819548
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1631819547}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.006, y: 0.607, z: -15.63}
-  m_LocalScale: {x: 3.3846798, y: 1, z: 0.044272}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2709927709663907199}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1631819550
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1631819547}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1651405917
 GameObject:
   m_ObjectHideFlags: 0
@@ -2508,7 +2463,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1651405917}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.195, z: -17.22}
+  m_LocalPosition: {x: 0, y: 0.195, z: -21.41}
   m_LocalScale: {x: 0.23102, y: 0.23102, z: 0.23102}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4341,12 +4296,9 @@ MonoBehaviour:
   sweepForMissedTriggers: 1
   lastSafePosition: {x: 0, y: 0, z: 0}
   savePositionDistance: 5
-  respawnPointsBeforeCheckpoint: {fileID: 0}
-  respawnPointsAfterCheckpoint: {fileID: 0}
+  respawnPointsTag: Respawn Points
   respawnCount: 0
   maxRespawns: 3
-  checkpointTag: CheckPoint
-  checkpointReached: 0
   chancesText: {fileID: 0}
 --- !u!143 &919132149144759176
 CharacterController:
@@ -4986,7 +4938,6 @@ Transform:
   - {fileID: 5512987429799367028}
   - {fileID: 7031543780244446075}
   - {fileID: 1095301943}
-  - {fileID: 1631819548}
   - {fileID: 610421408}
   m_Father: {fileID: 714132077}
   m_RootOrder: 0
@@ -21207,7 +21158,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4028022918089947894}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -1.08, y: 0.755, z: -19.23367}
+  m_LocalPosition: {x: -1.08, y: 0.755, z: -24.5}
   m_LocalScale: {x: 21.797474, y: 20.77144, z: 730.0988}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22019,7 +21970,7 @@ Transform:
   m_GameObject: {fileID: 3489619889153296882}
   m_LocalRotation: {x: -0.7071069, y: -0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0.6666667, y: 0, z: -13.66}
-  m_LocalScale: {x: 100, y: 105.918724, z: 100}
+  m_LocalScale: {x: 100, y: 103.2697, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2709927709663907199}
@@ -22256,7 +22207,7 @@ Transform:
   m_GameObject: {fileID: 2411584579658376477}
   m_LocalRotation: {x: -0.7071069, y: -0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: 0.6666667, y: 0, z: -13.67}
-  m_LocalScale: {x: 100, y: 105.39651, z: 100}
+  m_LocalScale: {x: 100, y: 101.44414, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2709927709663907199}

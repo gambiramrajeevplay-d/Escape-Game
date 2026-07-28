@@ -88,26 +88,16 @@ public class PlayerControllerRoblox : MonoBehaviour
     public Vector3 lastSafePosition;
     public float savePositionDistance = 0.5f;
 
-    [Tooltip("Parent object holding the respawn points used BEFORE the player has reached the checkpoint (e.g. the start-side group). Drag your existing 'Respawn Points' object here.")]
-    public Transform respawnPointsBeforeCheckpoint;
+    [Tooltip("Tag used on the parent GameObject that holds all respawn points as children (e.g. your 'Respawn Points' object).")]
+    public string respawnPointsTag = "Respawn Points";
 
-    [Tooltip("Parent object holding the respawn points used AFTER the player has reached the checkpoint (e.g. the far side of the bridge). Drag the object containing the 2 far-side respawn points here.")]
-    public Transform respawnPointsAfterCheckpoint;
-
-    private Transform[] respawnPointsBefore;
-    private Transform[] respawnPointsAfter;
+    private Transform respawnParent;
+    private Transform[] respawnPoints;
 
     public int respawnCount = 0;
     public int maxRespawns = 5;
 
     private Quaternion lastSafeRotation;
-
-    [Header("Checkpoint")]
-    [Tooltip("Tag used on the CheckPoint trigger collider(s) in the scene.")]
-    public string checkpointTag = "CheckPoint";
-
-    [Tooltip("True once the player has entered a collider tagged with checkpointTag. Drives which respawn point group is used. This does NOT reset on death/respawn, only stays true for the rest of the run (or reset it yourself on full restart).")]
-    public bool checkpointReached = false;
 
     [Header("UI")]
     public TMP_Text chancesText;
@@ -115,26 +105,22 @@ public class PlayerControllerRoblox : MonoBehaviour
     {
         lastSafeRotation = transform.rotation;
 
-        if (respawnPointsBeforeCheckpoint != null)
-        {
-            respawnPointsBefore = new Transform[respawnPointsBeforeCheckpoint.childCount];
-            for (int i = 0; i < respawnPointsBeforeCheckpoint.childCount; i++)
-                respawnPointsBefore[i] = respawnPointsBeforeCheckpoint.GetChild(i);
-        }
-        else
-        {
-            Debug.LogWarning("PlayerControllerRoblox: respawnPointsBeforeCheckpoint is not assigned in the Inspector.", this);
-        }
+        GameObject respawnObj = GameObject.FindGameObjectWithTag(respawnPointsTag);
 
-        if (respawnPointsAfterCheckpoint != null)
+        if (respawnObj != null)
         {
-            respawnPointsAfter = new Transform[respawnPointsAfterCheckpoint.childCount];
-            for (int i = 0; i < respawnPointsAfterCheckpoint.childCount; i++)
-                respawnPointsAfter[i] = respawnPointsAfterCheckpoint.GetChild(i);
+            respawnParent = respawnObj.transform;
+
+            respawnPoints = new Transform[respawnParent.childCount];
+
+            for (int i = 0; i < respawnParent.childCount; i++)
+            {
+                respawnPoints[i] = respawnParent.GetChild(i);
+            }
         }
         else
         {
-            Debug.LogWarning("PlayerControllerRoblox: respawnPointsAfterCheckpoint is not assigned in the Inspector.", this);
+            Debug.LogWarning("PlayerControllerRoblox: No GameObject found with tag '" + respawnPointsTag + "'. Respawning will fail.", this);
         }
 
         lastSafePosition = transform.position;
@@ -217,24 +203,6 @@ public class PlayerControllerRoblox : MonoBehaviour
         UpdateAnimator(isGrounded);
 
         wasGroundedLastFrame = isGrounded;
-    }
-
-    /// <summary>
-    /// Detects the player entering the CheckPoint trigger volume and marks
-    /// the checkpoint as reached, so future respawns use the "after
-    /// checkpoint" respawn point group instead of the starting group.
-    /// Requires the CheckPoint collider to have "Is Trigger" checked and
-    /// be tagged with checkpointTag (default "CheckPoint"), and this
-    /// GameObject's CharacterController/collider setup to generate trigger
-    /// events (CharacterController does trigger OnTriggerEnter on the
-    /// GameObject it's attached to).
-    /// </summary>
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!checkpointReached && other.CompareTag(checkpointTag))
-        {
-            checkpointReached = true;
-        }
     }
 
     /// <summary>
@@ -452,7 +420,10 @@ public class PlayerControllerRoblox : MonoBehaviour
         // player to an arbitrary spot offset by whatever direction they
         // happened to be facing when they died — sometimes back into the
         // same fail zone, into a wall, or off the edge of the platform
-        // entirely. Respawn at the actual saved safe spot instead.
+        // entirely. Always respawn at an actual respawn point instead —
+        // never fall back to lastSafePosition, which could be mid-air,
+        // mid-obstacle, or otherwise unsafe depending on where the player
+        // died.
         Transform point = GetClosestRespawnPoint();
 
         if (point != null)
@@ -462,8 +433,11 @@ public class PlayerControllerRoblox : MonoBehaviour
         }
         else
         {
-            transform.rotation = lastSafeRotation;
-            transform.position = lastSafePosition;
+            Debug.LogError("PlayerControllerRoblox: No respawn point available — " +
+                "check that a GameObject tagged '" + respawnPointsTag + "' exists in the scene and has child respawn points.", this);
+            controller.enabled = true;
+            canControl = true;
+            return;
         }
 
         velocity = Vector3.zero;
@@ -495,28 +469,25 @@ public class PlayerControllerRoblox : MonoBehaviour
     }
 
     /// <summary>
-    /// Picks the closest respawn point from whichever group matches the
-    /// current checkpoint state: the start-side group before the checkpoint
-    /// has been reached, or the far-side group once it has.
+    /// Picks whichever respawn point (among all children of the tagged
+    /// Respawn Points object) is closest to where the player currently is.
     /// </summary>
     private Transform GetClosestRespawnPoint()
     {
-        Transform[] activeGroup = checkpointReached ? respawnPointsAfter : respawnPointsBefore;
-
-        if (activeGroup == null || activeGroup.Length == 0)
+        if (respawnPoints == null || respawnPoints.Length == 0)
             return null;
 
-        Transform closest = activeGroup[0];
+        Transform closest = respawnPoints[0];
         float closestDistance = Vector3.Distance(transform.position, closest.position);
 
-        for (int i = 1; i < activeGroup.Length; i++)
+        for (int i = 1; i < respawnPoints.Length; i++)
         {
-            float distance = Vector3.Distance(transform.position, activeGroup[i].position);
+            float distance = Vector3.Distance(transform.position, respawnPoints[i].position);
 
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                closest = activeGroup[i];
+                closest = respawnPoints[i];
             }
         }
 
