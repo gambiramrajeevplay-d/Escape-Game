@@ -38084,6 +38084,7 @@ GameObject:
   - component: {fileID: 670780561}
   - component: {fileID: 670780560}
   - component: {fileID: 670780559}
+  - component: {fileID: 670780562}
   m_Layer: 6
   m_Name: Cube.005 (9)
   m_TagString: Obstacle
@@ -38099,7 +38100,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 670780557}
   m_LocalRotation: {x: -0.6345308, y: 0.31204283, z: 0.31204277, w: 0.63453084}
-  m_LocalPosition: {x: -0.03, y: 0.142, z: -72.63}
+  m_LocalPosition: {x: -0.03, y: 0.142, z: -71.05}
   m_LocalScale: {x: 47.75612, y: 152.72604, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -38169,6 +38170,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 670780557}
   m_Mesh: {fileID: 2212009239438826721, guid: 549da5f8620a0fc44a362a2935639aed, type: 3}
+--- !u!114 &670780562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670780557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 663d723b7aa97144d919bd1009b6e9e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 60
 --- !u!1 &680474365
 GameObject:
   m_ObjectHideFlags: 0
@@ -174364,6 +174378,14 @@ MonoBehaviour:
   groundSnapBuffer: 0.02
   isRunningParam: isRunning
   isJumpingParam: isJumping
+  footstepSource: {fileID: 0}
+  footstepClip: {fileID: 0}
+  walkFootstepPitch: 1
+  sprintFootstepPitch: 1.4
+  footstepVolume: 0.8
+  jumpClip: {fileID: 0}
+  jumpSoundVolume: 1
+  jumpForwardDistance: 0
   groundedGraceTime: 0.15
   canControl: 1
   sweepForMissedTriggers: 1
@@ -174422,6 +174444,9 @@ MonoBehaviour:
   playerController: {fileID: 919132149144759175}
   cameraFollow: {fileID: 0}
   failDelay: 1
+  deathSoundClip: {fileID: 0}
+  deathSoundVolume: 1
+  deathSound3D: 0
   respawnDelay: 2
 --- !u!114 &919132149144759178
 MonoBehaviour:
