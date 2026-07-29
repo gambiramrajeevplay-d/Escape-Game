@@ -60,6 +60,13 @@ public class ObstacleRagdollDeath : MonoBehaviour
     [Header("Fail Screen")]
     public float failDelay = 1f;
 
+    [Header("Death Sound")]
+    [Tooltip("One-shot clip played the instant the player dies.")]
+    public AudioClip deathSoundClip;
+    [Range(0f, 1f)] public float deathSoundVolume = 1f;
+    [Tooltip("If true, the death sound is played in 3D space at the death position (spatialBlend = 1). If false, it plays as flat 2D audio.")]
+    public bool deathSound3D = false;
+
     private CharacterController characterController;
     private bool triggered;
 
@@ -128,6 +135,15 @@ public class ObstacleRagdollDeath : MonoBehaviour
 
         if (characterController != null)
             characterController.enabled = false;
+
+        // Kill the player's own AudioSource (footstep loop, etc.) immediately
+        // on death — otherwise it can keep looping over the death sound and
+        // through the whole ragdoll/fail sequence since playerController
+        // being disabled stops its Update() but not any sound already playing.
+        if (playerController != null && playerController.footstepSource != null)
+            playerController.footstepSource.Stop();
+
+        PlayDeathSound();
 
         if (ragdoll != null)
         {
@@ -216,6 +232,33 @@ public class ObstacleRagdollDeath : MonoBehaviour
             StartCoroutine(ShowFailScreenAfterDelay());
         }
     }
+
+    /// <summary>
+    /// Spawns a fresh, dedicated AudioSource just for the death one-shot and
+    /// destroys it once the clip finishes. Kept separate from the player's
+    /// own AudioSource (which we just stopped above) so the death sound
+    /// can't be cut off by anything that touches the player's audio again
+    /// during the ragdoll/respawn sequence, and so it keeps playing even if
+    /// this GameObject or the player model gets deactivated mid-clip.
+    /// </summary>
+    private void PlayDeathSound()
+    {
+        if (deathSoundClip == null)
+            return;
+
+        GameObject deathSoundObj = new GameObject("DeathSound_OneShot");
+        deathSoundObj.transform.position = transform.position;
+
+        AudioSource deathAudioSource = deathSoundObj.AddComponent<AudioSource>();
+        deathAudioSource.clip = deathSoundClip;
+        deathAudioSource.volume = deathSoundVolume;
+        deathAudioSource.spatialBlend = deathSound3D ? 1f : 0f;
+        deathAudioSource.playOnAwake = false;
+        deathAudioSource.Play();
+
+        Destroy(deathSoundObj, deathSoundClip.length + 0.1f);
+    }
+
     private System.Collections.IEnumerator RespawnAfterDelay()
     {
         yield return new WaitForSeconds(respawnDelay);

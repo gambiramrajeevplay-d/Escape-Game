@@ -2341,7 +2341,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524974263}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.001}
+  m_LocalPosition: {x: 0, y: 0, z: 0.002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4278,7 +4278,7 @@ MonoBehaviour:
   sprintSpeed: 4
   acceleration: 2
   rotationSpeed: 2
-  jumpHeight: 1
+  jumpHeight: 0.5
   gravity: -25
   fallMultiplier: 1.6
   maxJumps: 1
@@ -4291,6 +4291,14 @@ MonoBehaviour:
   groundSnapBuffer: 0.02
   isRunningParam: isRunning
   isJumpingParam: isJumping
+  footstepSource: {fileID: 0}
+  footstepClip: {fileID: 8300000, guid: a6ade982445db60408004d37e2533df3, type: 3}
+  walkFootstepPitch: 1
+  sprintFootstepPitch: 1.4
+  footstepVolume: 0.8
+  jumpClip: {fileID: 8300000, guid: fb2200049b5ae504e818871f08d9e4b9, type: 3}
+  jumpSoundVolume: 1
+  jumpForwardDistance: 0.5
   groundedGraceTime: 0.15
   canControl: 1
   sweepForMissedTriggers: 1
@@ -4349,6 +4357,9 @@ MonoBehaviour:
   playerController: {fileID: 919132149144759175}
   cameraFollow: {fileID: 0}
   failDelay: 1
+  deathSoundClip: {fileID: 8300000, guid: 743368e5f99eac046b33eb85517964ca, type: 3}
+  deathSoundVolume: 1
+  deathSound3D: 0
   respawnDelay: 2
 --- !u!114 &919132149144759178
 MonoBehaviour:

@@ -45,6 +45,34 @@ public class PlayerControllerRoblox : MonoBehaviour
     public string isRunningParam = "isRunning";
     public string isJumpingParam = "isJumping";
 
+    [Header("Footsteps")]
+    [Tooltip("AudioSource used to play the footstep loop. If left empty, one is added to this GameObject automatically.")]
+    public AudioSource footstepSource;
+    [Tooltip("Single footstep clip. It will be looped for as long as the player is walking/running on the ground.")]
+    public AudioClip footstepClip;
+    [Tooltip("Pitch used for the footstep loop while walking.")]
+    [Range(0.5f, 2f)] public float walkFootstepPitch = 1f;
+    [Tooltip("Pitch used for the footstep loop while sprinting — higher pitch reads as a faster step cadence without needing a second clip.")]
+    [Range(0.5f, 2f)] public float sprintFootstepPitch = 1.4f;
+    [Tooltip("Volume of the footstep loop.")]
+    [Range(0f, 1f)] public float footstepVolume = 0.8f;
+
+    [Tooltip("One-shot clip played each time the player jumps.")]
+    public AudioClip jumpClip;
+    [Range(0f, 1f)] public float jumpSoundVolume = 1f;
+
+    [Header("Jump Forward Movement")]
+    [Tooltip("How far forward (in world units) the player is pushed, in the direction they're facing at the moment they jump, over the full arc of the jump. This is added on top of normal WASD air control, not a replacement for it. 0 = no extra push (player only moves via input while airborne, same as before).")]
+    public float jumpForwardDistance = 0f;
+
+    // Speed derived from jumpForwardDistance and the jump's estimated total
+    // air time, computed once when the jump starts. Applied every frame for
+    // the duration of the jump so it isn't affected by HandleMovement's
+    // acceleration/deceleration smoothing (which would otherwise fight it
+    // or wash it out if the player isn't also holding a direction).
+    private float jumpForwardSpeed = 0f;
+    private Vector3 jumpForwardDirection = Vector3.forward;
+
     private CharacterController controller;
     private Vector3 velocity;             // current vertical velocity (and used for horizontal smoothing)
     private Vector3 currentMoveVelocity;  // smoothed horizontal velocity
@@ -72,6 +100,11 @@ public class PlayerControllerRoblox : MonoBehaviour
     // after a respawn. UpdateAnimator uses this so the jump animation only
     // plays on an actual jump, not on every ground-leaving moment.
     private bool jumpStarted = false;
+
+    // Set each frame in HandleMovement/HandleMovementFallback so the
+    // footstep pitch (and any other sprint-dependent logic) can read the
+    // current sprint state without recomputing the input check again.
+    private bool isSprintingCached = false;
 
     [Header("Control")]
     public bool canControl = true;
@@ -150,6 +183,17 @@ public class PlayerControllerRoblox : MonoBehaviour
                 chancesText = obj.GetComponent<TMP_Text>();
         }
 
+        // Set up the footstep AudioSource once. Using a single looping
+        // clip whose pitch shifts for sprint, rather than Play()-ing a
+        // one-shot every frame, since a one-shot would either overlap
+        // itself constantly or need its own timer/cadence logic.
+        if (footstepSource == null)
+            footstepSource = gameObject.AddComponent<AudioSource>();
+
+        footstepSource.clip = footstepClip;
+        footstepSource.loop = true;
+        footstepSource.playOnAwake = false;
+        footstepSource.volume = footstepVolume;
 
         UpdateChancesUI();
     }
@@ -177,6 +221,7 @@ public class PlayerControllerRoblox : MonoBehaviour
             velocity.y = groundedStickForce;
             jumpsUsed = 0;
             jumpStarted = false;
+            jumpForwardSpeed = 0f;
         }
 
         HandleMovement(isGrounded);
@@ -188,7 +233,11 @@ public class PlayerControllerRoblox : MonoBehaviour
         // calling it 2-3x per frame roughly multiplies that cost for no benefit —
         // this matters a lot more on weak TV-box CPUs than on a dev machine.
         Vector3 positionBeforeMove = transform.position;
-        controller.Move((currentMoveVelocity + Vector3.up * velocity.y) * Time.deltaTime);
+
+        // Jump-forward push only applies while airborne from an actual jump
+        // (jumpStarted), so it never affects normal ground movement.
+        Vector3 jumpForwardVelocity = jumpStarted ? jumpForwardDirection * jumpForwardSpeed : Vector3.zero;
+        controller.Move((currentMoveVelocity + jumpForwardVelocity + Vector3.up * velocity.y) * Time.deltaTime);
 
         if (sweepForMissedTriggers)
             CheckForMissedTriggers(positionBeforeMove, transform.position);
@@ -290,6 +339,9 @@ public class PlayerControllerRoblox : MonoBehaviour
         float inputZ = Mathf.Max(0f, Input.GetAxisRaw("Vertical")); // Only allow forward
         Vector3 inputDir = new Vector3(inputX, 0f, inputZ).normalized;
 
+        bool isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        isSprintingCached = isSprinting;
+
         // Guard against a missing camera reference. Previously this threw a
         // NullReferenceException on cameraTransform.forward, which silently
         // froze the rest of Update() every frame — no movement, no gravity,
@@ -323,7 +375,6 @@ public class PlayerControllerRoblox : MonoBehaviour
 
         Vector3 targetDir = (camForward * inputDir.z + camRight * inputDir.x);
 
-        bool isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         float targetSpeed = (isSprinting ? sprintSpeed : walkSpeed) * inputDir.magnitude;
 
         // Normalize once and reuse for both speed and rotation, instead of
@@ -351,6 +402,8 @@ public class PlayerControllerRoblox : MonoBehaviour
     private void HandleMovementFallback(Vector3 inputDir, bool isGrounded)
     {
         bool isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        isSprintingCached = isSprinting;
+
         float targetSpeed = (isSprinting ? sprintSpeed : walkSpeed) * inputDir.magnitude;
         Vector3 targetVelocity = inputDir.normalized * targetSpeed;
 
@@ -371,7 +424,62 @@ public class PlayerControllerRoblox : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             jumpsUsed++;
             jumpStarted = true;
+
+            SetupJumpForwardMovement();
+
+            PlayJumpSound();
         }
+    }
+
+    /// <summary>
+    /// Works out how fast to push the player forward so that, over the
+    /// jump's full estimated air time, they cover exactly jumpForwardDistance
+    /// world units. Air time is split into rise (using gravity) and fall
+    /// (using gravity * fallMultiplier) phases since ApplyGravity treats
+    /// them differently. Direction is locked to wherever the player is
+    /// facing at the instant they leave the ground, so strafing/turning
+    /// input mid-air doesn't change the push direction.
+    /// </summary>
+    private void SetupJumpForwardMovement()
+    {
+        if (jumpForwardDistance <= 0f)
+        {
+            jumpForwardSpeed = 0f;
+            return;
+        }
+
+        float timeToApex = velocity.y / -gravity;
+        float timeToFall = velocity.y / (-gravity * fallMultiplier);
+        float estimatedAirTime = timeToApex + timeToFall;
+
+        jumpForwardSpeed = estimatedAirTime > 0f ? jumpForwardDistance / estimatedAirTime : 0f;
+        jumpForwardDirection = transform.forward;
+    }
+
+    /// <summary>
+    /// Plays the jump clip on a brand-new, dedicated AudioSource rather than
+    /// footstepSource. Jumping flips isGrounded false almost immediately,
+    /// which makes UpdateFootsteps call footstepSource.Stop() that same
+    /// frame — and AudioSource.Stop() kills every sound on that source,
+    /// including a PlayOneShot that was just started, cutting the jump clip
+    /// off before it could be heard. A separate source sidesteps that
+    /// entirely. Destroys itself once the clip finishes playing.
+    /// </summary>
+    private void PlayJumpSound()
+    {
+        if (jumpClip == null)
+            return;
+
+        GameObject jumpSoundObj = new GameObject("JumpSound_OneShot");
+        jumpSoundObj.transform.position = transform.position;
+
+        AudioSource jumpAudioSource = jumpSoundObj.AddComponent<AudioSource>();
+        jumpAudioSource.clip = jumpClip;
+        jumpAudioSource.volume = jumpSoundVolume;
+        jumpAudioSource.playOnAwake = false;
+        jumpAudioSource.Play();
+
+        Destroy(jumpSoundObj, jumpClip.length + 0.1f);
     }
 
     private void ApplyGravity()
@@ -411,7 +519,36 @@ public class PlayerControllerRoblox : MonoBehaviour
 
         animator.SetBool(isRunningHash, isRunning);
         animator.SetBool(isJumpingHash, isJumping);
+
+        // Footsteps follow the same "actually walking/running on the ground"
+        // signal the animator uses, so the loop starts/stops in lockstep
+        // with the run animation and stays silent while jumping/falling.
+        UpdateFootsteps(isRunning && isGrounded, isSprintingCached);
     }
+
+    /// <summary>
+    /// Starts/stops the looping footstep clip and adjusts its pitch for
+    /// walk vs sprint. A single clip is reused rather than one-shotting it
+    /// repeatedly, since looping avoids needing a step-cadence timer.
+    /// </summary>
+    private void UpdateFootsteps(bool shouldPlay, bool isSprinting)
+    {
+        if (footstepSource == null || footstepClip == null)
+            return;
+
+        if (shouldPlay)
+        {
+            footstepSource.pitch = isSprinting ? sprintFootstepPitch : walkFootstepPitch;
+
+            if (!footstepSource.isPlaying)
+                footstepSource.Play();
+        }
+        else if (footstepSource.isPlaying)
+        {
+            footstepSource.Stop();
+        }
+    }
+
     public void Respawn()
     {
         controller.enabled = false;
@@ -449,6 +586,12 @@ public class PlayerControllerRoblox : MonoBehaviour
         ungroundedTimer = 0f;
         jumpStarted = false;
         jumpsUsed = 0;
+        jumpForwardSpeed = 0f;
+
+        // Stop the footstep loop too — otherwise it can keep playing through
+        // the teleport if the player was mid-step when they died.
+        if (footstepSource != null && footstepSource.isPlaying)
+            footstepSource.Stop();
 
         controller.enabled = true;
 
