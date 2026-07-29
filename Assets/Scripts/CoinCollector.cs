@@ -27,11 +27,11 @@ public class CoinCollector : MonoBehaviour
         }
 
         // 🔊 Find AudioSource
-        //GameObject audioObj = GameObject.FindGameObjectWithTag("Sounds");
-        //if (audioObj != null)
-        //{
-        //    pickupSource = audioObj.GetComponent<AudioSource>();
-        //}
+        GameObject audioObj = GameObject.FindGameObjectWithTag("Sounds");
+        if (audioObj != null)
+        {
+            pickupSource = audioObj.GetComponent<AudioSource>();
+        }
 
         UpdateCoinUI(); // will show 0 at start
     }
