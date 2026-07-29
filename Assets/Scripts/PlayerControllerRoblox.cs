@@ -520,10 +520,14 @@ public class PlayerControllerRoblox : MonoBehaviour
         animator.SetBool(isRunningHash, isRunning);
         animator.SetBool(isJumpingHash, isJumping);
 
-        // Footsteps follow the same "actually walking/running on the ground"
-        // signal the animator uses, so the loop starts/stops in lockstep
-        // with the run animation and stays silent while jumping/falling.
-        UpdateFootsteps(isRunning && isGrounded, isSprintingCached);
+        // canControl is included here because UpdateAnimator (and this call)
+        // keep running every single frame even while canControl is false —
+        // only HandleMovement/HandleJump are skipped. Without this check,
+        // isRunning can stay frozen at whatever currentMoveVelocity was the
+        // instant control was cut (e.g. by LevelTrigger on Pass/Fail), which
+        // made UpdateFootsteps call Play() again the very next frame right
+        // after something else had just called Stop() on this same source.
+        UpdateFootsteps(isRunning && isGrounded && canControl, isSprintingCached);
     }
 
     /// <summary>
