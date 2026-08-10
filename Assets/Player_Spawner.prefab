@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5300088204527922521}
   - component: {fileID: 5300088204527922520}
   - component: {fileID: 5300088204527922523}
+  - component: {fileID: 9056768504960250599}
   m_Layer: 0
   m_Name: Player_Spawner
   m_TagString: Untagged
@@ -97,3 +98,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9056768504960250599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5300088204527922525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c906acaf9784abd41854dff4d7e2d86d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  truckPrefabs:
+  - {fileID: 8266025562909413859, guid: 21c78cd54eb15d34f90bc315336c491b, type: 3}
+  - {fileID: 9057871732252913914, guid: 6a633ede1415b1a4e8be1f0c2418246c, type: 3}
+  - {fileID: 8437674715189940098, guid: f8ca4b08fac54734ab50a7e01218b86f, type: 3}
+  - {fileID: 8382089364944655505, guid: fb693170f3529e5439f3133436d441bd, type: 3}
+  - {fileID: 6027261066376430167, guid: d632aef589ec25145b02b25523d350c3, type: 3}
+  - {fileID: 249332905921828987, guid: 5461293afec12cd4fbe6d21c967143c2, type: 3}
+  - {fileID: 3350947019567116199, guid: acc897e02b87dd248884dfc496a83a56, type: 3}

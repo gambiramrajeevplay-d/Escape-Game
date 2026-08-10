@@ -5224,7 +5224,7 @@ MonoBehaviour:
   playerController: {fileID: 9158344112891186734}
   cameraFollow: {fileID: 0}
   failDelay: 1
-  deathSoundClip: {fileID: 0}
+  deathSoundClip: {fileID: 8300000, guid: 743368e5f99eac046b33eb85517964ca, type: 3}
   deathSoundVolume: 1
   deathSound3D: 0
   respawnDelay: 2
