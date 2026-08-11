@@ -15,7 +15,7 @@ public class TvContentMove : MonoBehaviour
            GetComponent<TvContentMove>().enabled = false;
         }
        
-           // contentmover.anchoredPosition = new Vector2(myval, 0);
+           //contentmover.anchoredPosition = new Vector2(myval, 0);
           //  GetComponent<TvContentMove>().enabled = true;
         
            

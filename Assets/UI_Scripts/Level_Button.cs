@@ -168,14 +168,9 @@ public class Level_Button : MonoBehaviour
     }
     private IEnumerator LoadLevelWithDelay(string sceneName)
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
 
-        // Save the actual gameplay scene
-        PlayerPrefs.SetString("NextLevelScene", sceneName);
-        PlayerPrefs.Save();
-
-        // Load cutscene scene
-        SceneManager.LoadScene("CutScene");
+        SceneManager.LoadScene(sceneName);
     }
 
     public int GetLevelNumberSafe()

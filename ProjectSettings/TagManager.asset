@@ -17,6 +17,10 @@ TagManager:
   - Sounds
   - Giveborder
   - border
+  - Pass
+  - Fail
+  - Level
+  - InGame
   layers:
   - Default
   - TransparentFX

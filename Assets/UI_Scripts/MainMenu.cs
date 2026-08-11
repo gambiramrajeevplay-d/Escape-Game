@@ -32,6 +32,14 @@ public class MainMenu : MonoBehaviour
     public Image sound_;
     public Sprite sound_on, sound_off;
 
+    [Header("Sound Toggle Slide")]
+    [SerializeField] private RectTransform soundToggleRect;   // drag the same object as sound_ here
+    [SerializeField] private float onPosX = 40f;               // right position (ON)
+    [SerializeField] private float offPosX = -40f;              // left position (OFF)
+    [SerializeField] private float slideDuration = 0.15f;
+
+    private Coroutine slideRoutine;
+
     private Animator animator;
 
     public static MainMenu instance;
@@ -230,11 +238,47 @@ public class MainMenu : MonoBehaviour
         Debug.Log($"Volume: {AudioListener.volume}");
         Debug.Log($"Paused: {AudioListener.pause}");
     }
+
     void UpdateSoundIcon()
     {
         if (sound_ != null)
             sound_.sprite = AudioManagerPause.IsMuted ? sound_off : sound_on;
+
+        if (soundToggleRect != null)
+        {
+            float targetX = AudioManagerPause.IsMuted ? offPosX : onPosX;
+
+            if (slideRoutine != null)
+                StopCoroutine(slideRoutine);
+
+            if (gameObject.activeInHierarchy)
+            {
+                slideRoutine = StartCoroutine(SlideToggle(targetX));
+            }
+            else
+            {
+                // Not active — just snap, no point animating something invisible
+                Vector2 pos = soundToggleRect.anchoredPosition;
+                soundToggleRect.anchoredPosition = new Vector2(targetX, pos.y);
+            }
+        }
     }
+    private System.Collections.IEnumerator SlideToggle(float targetX)
+    {
+        Vector2 start = soundToggleRect.anchoredPosition;
+        Vector2 end = new Vector2(targetX, start.y);
+
+        float t = 0f;
+        while (t < slideDuration)
+        {
+            t += Time.unscaledDeltaTime; // unscaled so it still works if Time.timeScale is 0
+            soundToggleRect.anchoredPosition = Vector2.Lerp(start, end, t / slideDuration);
+            yield return null;
+        }
+
+        soundToggleRect.anchoredPosition = end;
+    }
+   
     void DisableAllMenus()
     {
         mainMenu.SetActive(false);

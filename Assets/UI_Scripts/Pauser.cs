@@ -17,6 +17,14 @@ public class Pauser : MonoBehaviour
     public Sprite sound_on;
     public Sprite sound_off;
 
+    [Header("Sound Toggle Slide")]
+    [SerializeField] private RectTransform soundToggleRect;   // same object as soundIcon
+    [SerializeField] private float onPosX = 40f;
+    [SerializeField] private float offPosX = -40f;
+    [SerializeField] private float slideDuration = 0.15f;
+
+    private Coroutine slideRoutine;
+
     public static bool PauseLocked = false;
 
     private GameObject inGameUI;
@@ -37,7 +45,7 @@ public class Pauser : MonoBehaviour
             PauseButton.SetActive(
                 !AndroidTV.IsAndroidOrFireTv());
 
-        UpdateSoundIcon();
+        UpdateSoundIcon(true); // snap on enable, no slide
     }
 
     private void Start()
@@ -49,7 +57,7 @@ public class Pauser : MonoBehaviour
 
         inGameUI = GameObject.FindGameObjectWithTag("InGame");
 
-        UpdateSoundIcon();
+        UpdateSoundIcon(true); // snap on start, no slide
     }
 
     private void Update()
@@ -154,7 +162,7 @@ public class Pauser : MonoBehaviour
         UpdateSoundIcon();
     }
 
-    void UpdateSoundIcon()
+    void UpdateSoundIcon(bool instant = false)
     {
         if (soundIcon != null)
         {
@@ -163,6 +171,40 @@ public class Pauser : MonoBehaviour
                     ? sound_off
                     : sound_on;
         }
+
+        if (soundToggleRect != null)
+        {
+            float targetX = AudioManagerPause.IsMuted ? offPosX : onPosX;
+
+            if (slideRoutine != null)
+                StopCoroutine(slideRoutine);
+
+            if (!instant && gameObject.activeInHierarchy)
+            {
+                slideRoutine = StartCoroutine(SlideToggle(targetX));
+            }
+            else
+            {
+                Vector2 pos = soundToggleRect.anchoredPosition;
+                soundToggleRect.anchoredPosition = new Vector2(targetX, pos.y);
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator SlideToggle(float targetX)
+    {
+        Vector2 start = soundToggleRect.anchoredPosition;
+        Vector2 end = new Vector2(targetX, start.y);
+
+        float t = 0f;
+        while (t < slideDuration)
+        {
+            t += Time.unscaledDeltaTime; // unscaled - works even when paused (Time.timeScale = 0)
+            soundToggleRect.anchoredPosition = Vector2.Lerp(start, end, t / slideDuration);
+            yield return null;
+        }
+
+        soundToggleRect.anchoredPosition = end;
     }
 
     public static void LockPause()

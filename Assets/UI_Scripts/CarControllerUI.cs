@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class CarControllerUI : MonoBehaviour
 {
-    private const int TOTAL_CARS = 10;
+    private const int TOTAL_CARS = 7;
     private const int SPECIAL_CAR_INDEX = 1;
     private const int SPECIAL_CAR_PRICE = 2500;
 

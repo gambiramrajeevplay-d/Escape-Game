@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
         if (resultCamera != null)
             resultCamera.gameObject.SetActive(false);
 
-        instructUI = GameObject.FindGameObjectWithTag("Instruct");
+     //   instructUI = GameObject.FindGameObjectWithTag("Instruct");
 
         if (passPanel == null)
             passPanel = GameObject.FindGameObjectWithTag("Pass");
