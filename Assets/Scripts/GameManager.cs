@@ -32,7 +32,9 @@ public class GameManager : MonoBehaviour
     public Camera resultCamera;
 
     [Header("Reward UI")]
+    [Tooltip("Shows combined 'coinsCollected+reward' text, e.g. '2+100'.")]
     public TMP_Text winRewardText;
+
     public TMP_Text loseRewardText;
 
     private bool gameEnded;
@@ -55,15 +57,18 @@ public class GameManager : MonoBehaviour
 
         if (failPanel != null)
             failPanel.SetActive(false);
+
+        // Make absolutely sure the result camera starts disabled.
+        if (resultCamera != null)
+        {
+            resultCamera.enabled = false;
+            resultCamera.gameObject.SetActive(false);
+        }
     }
 
     private void Start()
     {
-        if (resultCamera != null)
-            resultCamera.gameObject.SetActive(false);
-
-     //   instructUI = GameObject.FindGameObjectWithTag("Instruct");
-
+        // Find UI automatically if not assigned.
         if (passPanel == null)
             passPanel = GameObject.FindGameObjectWithTag("Pass");
 
@@ -78,6 +83,9 @@ public class GameManager : MonoBehaviour
 
         if (failPanel != null)
             failPanel.SetActive(false);
+
+        // Make sure result camera is OFF at game start.
+        DisableResultCamera();
 
         Time.timeScale = 0f;
         AudioListener.pause = true;
@@ -110,6 +118,10 @@ public class GameManager : MonoBehaviour
 
         Pauser.UnlockPause();
     }
+
+    // =========================================================
+    // PASS
+    // =========================================================
 
     public void LevelPassed()
     {
@@ -145,20 +157,36 @@ public class GameManager : MonoBehaviour
             UnlockNextLevel();
         }
 
-        UpdateRewardUI(reward);
+        int coinsCollected = GetCoinsCollectedThisLevel();
 
+        // Add collected coins to total currency.
+        if (coinsCollected > 0)
+            CurrecnyManager.instance?.AddCurrency(coinsCollected);
+
+        UpdateRewardUI(reward, coinsCollected);
+
+        // Stop gameplay first.
+        StopAllGameAudio();
+
+        // Disable the level before enabling the result camera.
+        DisableLevel();
+
+        // IMPORTANT:
+        // Enable result camera AFTER disabling the level.
         EnableResultCamera();
 
-        StopAllGameAudio();
+        // Play result sound.
         PlayResultSound(winClip);
 
         if (passPanel != null)
             passPanel.SetActive(true);
 
-        DisableLevel();
-
         Time.timeScale = 0f;
     }
+
+    // =========================================================
+    // FAIL
+    // =========================================================
 
     public void LevelFailed()
     {
@@ -182,31 +210,70 @@ public class GameManager : MonoBehaviour
         if (player != null)
             player.canControl = false;
 
-        UpdateRewardUI(0);
+        int coinsCollected = GetCoinsCollectedThisLevel();
 
+        // Collected coins still count when player fails.
+        if (coinsCollected > 0)
+            CurrecnyManager.instance?.AddCurrency(coinsCollected);
+
+        UpdateRewardUI(0, coinsCollected);
+
+        // Stop gameplay audio.
+        StopAllGameAudio();
+
+        // Disable level BEFORE enabling result camera.
+        DisableLevel();
+
+        // IMPORTANT:
+        // Enable result camera LAST.
         EnableResultCamera();
 
-        StopAllGameAudio();
+        // Play lose sound.
         PlayResultSound(loseClip);
 
         if (failPanel != null)
             failPanel.SetActive(true);
 
-        DisableLevel();
-
         Time.timeScale = 0f;
     }
 
-    void UpdateRewardUI(int reward)
+    // =========================================================
+    // COINS
+    // =========================================================
+
+    int GetCoinsCollectedThisLevel()
     {
-        string text = reward.ToString();
+        CoinCollector coinCollector =
+            FindObjectOfType<CoinCollector>();
+
+        return coinCollector != null
+            ? coinCollector.GetLevelCoins()
+            : 0;
+    }
+
+    // =========================================================
+    // REWARD UI
+    // =========================================================
+
+    void UpdateRewardUI(int reward, int coinsCollected)
+    {
+        // Example:
+        // 2 coins collected + 100 level reward
+        // Displays: 2+100
+
+        string combinedText =
+            coinsCollected + "+" + reward;
 
         if (winRewardText != null)
-            winRewardText.text = text;
+            winRewardText.text = combinedText;
 
         if (loseRewardText != null)
-            loseRewardText.text = text;
+            loseRewardText.text = combinedText;
     }
+
+    // =========================================================
+    // LEVEL UNLOCK
+    // =========================================================
 
     void UnlockNextLevel()
     {
@@ -220,23 +287,87 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(
                 StringsData.playerLevel,
-                currentLevelIndex + 1);
+                currentLevelIndex + 1
+            );
 
             PlayerPrefs.Save();
         }
     }
 
+    // =========================================================
+    // RESULT CAMERA
+    // =========================================================
+
     void EnableResultCamera()
     {
-        if (resultCamera != null)
-            resultCamera.gameObject.SetActive(true);
+        if (resultCamera == null)
+        {
+            Debug.LogWarning(
+                "GameManager: Result Camera is not assigned!"
+            );
+
+            return;
+        }
+
+        Debug.Log("GameManager: Enabling Result Camera.");
+
+        // Disable all other cameras first.
+        Camera[] allCameras =
+            FindObjectsOfType<Camera>();
+
+        foreach (Camera cam in allCameras)
+        {
+            if (cam == null)
+                continue;
+
+            if (cam != resultCamera)
+            {
+                cam.enabled = false;
+            }
+        }
+
+        // Enable the GameObject.
+        resultCamera.gameObject.SetActive(true);
+
+        // Enable the Camera component.
+        resultCamera.enabled = true;
+
+        Debug.Log(
+            "Result Camera enabled: " +
+            resultCamera.gameObject.activeInHierarchy +
+            " | Camera enabled: " +
+            resultCamera.enabled
+        );
     }
+
+    void DisableResultCamera()
+    {
+        if (resultCamera == null)
+            return;
+
+        resultCamera.enabled = false;
+        resultCamera.gameObject.SetActive(false);
+    }
+
+    // =========================================================
+    // LEVEL
+    // =========================================================
 
     void DisableLevel()
     {
         if (currentLevel != null)
+        {
             currentLevel.SetActive(false);
+
+            Debug.Log(
+                "GameManager: Current Level disabled."
+            );
+        }
     }
+
+    // =========================================================
+    // AUDIO
+    // =========================================================
 
     void StopAllGameAudio()
     {
@@ -245,6 +376,9 @@ public class GameManager : MonoBehaviour
 
         foreach (AudioSource source in sources)
         {
+            if (source == null)
+                continue;
+
             source.Stop();
         }
     }
@@ -252,20 +386,43 @@ public class GameManager : MonoBehaviour
     void PlayResultSound(AudioClip clip)
     {
         if (clip == null)
-            return;
+        {
+            Debug.LogWarning(
+                "GameManager: Result AudioClip is not assigned."
+            );
 
-        GameObject obj = new GameObject("ResultAudio");
+            return;
+        }
+
+        GameObject obj =
+            new GameObject("ResultAudio");
 
         AudioSource source =
             obj.AddComponent<AudioSource>();
 
         source.clip = clip;
+
+        // Result sound must play even though
+        // AudioListener.pause becomes true.
         source.ignoreListenerPause = true;
+
+        source.playOnAwake = false;
+        source.loop = false;
+        source.volume = 1f;
 
         source.Play();
 
-        Destroy(obj, clip.length);
+        Debug.Log(
+            "GameManager: Playing result audio: " +
+            clip.name
+        );
+
+        Destroy(obj, clip.length + 0.1f);
     }
+
+    // =========================================================
+    // RESTART
+    // =========================================================
 
     public void RestartLevel()
     {
@@ -273,8 +430,13 @@ public class GameManager : MonoBehaviour
         AudioListener.pause = false;
 
         SceneManager.LoadScene(
-            SceneManager.GetActiveScene().buildIndex);
+            SceneManager.GetActiveScene().buildIndex
+        );
     }
+
+    // =========================================================
+    // HOME
+    // =========================================================
 
     public void GoHome()
     {
@@ -283,6 +445,10 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene(0);
     }
+
+    // =========================================================
+    // DESTROY
+    // =========================================================
 
     private void OnDestroy()
     {

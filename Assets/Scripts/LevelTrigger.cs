@@ -10,17 +10,14 @@ public class LevelTrigger : MonoBehaviour
     [Header("Respawn")]
     public float respawnDelay = 0.5f;
     private ObstacleRagdollDeath ragdollDeath;
-    void Start()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("MainPlayer");
-        if (player != null)
-        {
-            if (playerAnimator == null)
-                playerAnimator = player.GetComponent<Animator>();
-            playerController = player.GetComponent<PlayerControllerRoblox>();
-            ragdollDeath = player.GetComponent<ObstacleRagdollDeath>();
-        }
-    }
+
+    // No Start()-time lookup here on purpose. If the player is spawned at
+    // runtime (e.g. by a spawner script) after this trigger's Start() runs,
+    // GameObject.FindGameObjectWithTag("MainPlayer") returns null and these
+    // references would stay null forever, silently skipping all pass/fail
+    // logic. Instead, everything is resolved lazily the first time a trigger
+    // actually fires, straight from the collider involved — see TryTrigger.
+
     private void OnTriggerEnter(Collider other)
     {
         TryTrigger(other);
@@ -42,19 +39,33 @@ public class LevelTrigger : MonoBehaviour
         if (!other.CompareTag("MainPlayer"))
             return;
         triggered = true;
-        // Pull the controller straight off the collider that entered the trigger
-        // instead of relying only on the Start() cache. If this LevelTrigger's
-        // Start() ran before the player existed (spawn order, player instantiated
-        // late, trigger object enabled later, etc.) playerController stayed null
-        // forever, which silently skipped canControl/respawn logic entirely —
-        // the player kept moving normally and nothing about "failing" ever
-        // actually happened, which is exactly the symptom of respawn "not working".
+
+        // Resolve everything off the collider that actually entered, using
+        // GetComponentInParent rather than GetComponent — if the player's
+        // collider lives on a child object (a feet/capsule collider under a
+        // root rig, say) while PlayerControllerRoblox sits on the parent,
+        // a plain GetComponent would come back null and silently no-op the
+        // whole trigger. Falls back to the cached fields first so repeated
+        // triggers with the same already-known player don't redo the lookup.
         PlayerControllerRoblox controllerToUse = playerController != null
             ? playerController
-            : other.GetComponent<PlayerControllerRoblox>();
+            : other.GetComponentInParent<PlayerControllerRoblox>();
+
         Animator animatorToUse = playerAnimator != null
             ? playerAnimator
-            : other.GetComponent<Animator>();
+            : other.GetComponentInParent<Animator>();
+
+        ObstacleRagdollDeath ragdollToUse = ragdollDeath != null
+            ? ragdollDeath
+            : other.GetComponentInParent<ObstacleRagdollDeath>();
+
+        // Cache whatever we found so future triggers (this one resetting via
+        // RespawnAfterDelay, or a different LevelTrigger later in the level)
+        // skip the GetComponentInParent calls entirely.
+        if (playerController == null) playerController = controllerToUse;
+        if (playerAnimator == null) playerAnimator = animatorToUse;
+        if (ragdollDeath == null) ragdollDeath = ragdollToUse;
+
         if (controllerToUse != null)
         {
             controllerToUse.canControl = false;
@@ -66,7 +77,7 @@ public class LevelTrigger : MonoBehaviour
             // forever after the player wins/fails instead of cutting off.
             if (controllerToUse.footstepSource != null)
                 controllerToUse.footstepSource.Stop();
-            if(controllerToUse.footstepSource != null)
+            if (controllerToUse.footstepSource != null)
                 controllerToUse.footstepSource.loop = false;
         }
         if (CompareTag("Pass Trigger"))
@@ -83,7 +94,7 @@ public class LevelTrigger : MonoBehaviour
                 if (controllerToUse.respawnCount >= controllerToUse.maxRespawns)
                 {
                     if (ragdollDeath == null)
-                        ragdollDeath = other.GetComponent<ObstacleRagdollDeath>();
+                        ragdollDeath = other.GetComponentInParent<ObstacleRagdollDeath>();
                     if (ragdollDeath != null)
                         ragdollDeath.Die();
                     else

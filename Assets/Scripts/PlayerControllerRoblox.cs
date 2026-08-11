@@ -3,6 +3,7 @@ using TMPro;
 /// <summary>
 /// Roblox-style third person player controller for Unity 2021.
 /// Movement is relative to the camera (WASD), Space to jump, hold Shift to sprint.
+/// Also reads on-screen touch input from TouchControlsUI when active (mobile/tablet).
 /// Requires a CharacterController component on the same GameObject.
 /// Drives an Animator with "isRunning" and "isJumping" bools.
 /// </summary>
@@ -337,6 +338,18 @@ public class PlayerControllerRoblox : MonoBehaviour
     {
         float inputX = Input.GetAxisRaw("Horizontal"); // A/D
         float inputZ = Mathf.Max(0f, Input.GetAxisRaw("Vertical")); // Only allow forward
+
+        // Merge on-screen touch input (mobile/tablet) with keyboard/gamepad
+        // input. TouchControlsUI.ControlsActive is only true on devices
+        // where the buttons are actually shown, so this is a no-op on TV
+        // builds. Clamped so holding a keyboard key and a touch button at
+        // the same time can't push the value past +/-1.
+        if (TouchControlsUI.ControlsActive)
+        {
+            inputX = Mathf.Clamp(inputX + TouchControlsUI.Horizontal, -1f, 1f);
+            inputZ = Mathf.Clamp(inputZ + Mathf.Max(0f, TouchControlsUI.Vertical), 0f, 1f);
+        }
+
         Vector3 inputDir = new Vector3(inputX, 0f, inputZ).normalized;
 
         bool isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
@@ -418,7 +431,18 @@ public class PlayerControllerRoblox : MonoBehaviour
 
     private void HandleJump()
     {
-        if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.JoystickButton0)) && jumpsUsed < maxJumps)
+        bool jumpInput = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.JoystickButton0);
+
+        // Touch jump button. Consumed here (whether or not the jump actually
+        // fires below) so a single tap can't keep re-triggering every frame
+        // until the player happens to be grounded again with jumps available.
+        if (TouchControlsUI.ControlsActive && TouchControlsUI.JumpPressed)
+        {
+            jumpInput = true;
+            TouchControlsUI.ConsumeJump();
+        }
+
+        if (jumpInput && jumpsUsed < maxJumps)
         {
             // v = sqrt(h * -2 * g)
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);

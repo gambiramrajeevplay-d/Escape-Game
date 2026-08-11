@@ -7,22 +7,25 @@ using Script;
 /// Shows/hides on-screen touch controls based on device type.
 /// TV (Android TV / Fire TV) -> hidden, uses remote/gamepad instead.
 /// Phone/Tablet -> shown.
-/// Use the Test Override enum in the Inspector to force either state
-/// while testing in the Editor or on a dev build, without needing an
-/// actual TV or tablet on hand.
+/// Turn off "Auto Detect Device" and set "Device Type Override" to force
+/// either state while testing in the Editor or on a dev build, without
+/// needing an actual TV or tablet on hand.
 /// </summary>
 public class TouchControlsUI : MonoBehaviour
 {
-    public enum DeviceTypeOverride
+    public enum DeviceType
     {
-        None,       // real device detection (AndroidTV check + mobile check)
-        ForceShow,  // pretend it's a phone/tablet - always show controls
-        ForceHide   // pretend it's a TV - always hide controls
+        Mobile, // touch controls shown
+        TV,     // touch controls hidden, remote/gamepad only
+        Both    // touch controls shown AND keyboard/gamepad input still works at the same time
     }
 
     [Header("Testing")]
-    [Tooltip("Override real device detection. Leave as None for real builds.")]
-    public DeviceTypeOverride testOverride = DeviceTypeOverride.None;
+    [Tooltip("Real device detection (AndroidTV check + mobile check). Turn off to force a specific device type below.")]
+    public bool autoDetectDevice = true;
+
+    [Tooltip("Only used when Auto Detect Device is off.")]
+    public DeviceType deviceTypeOverride = DeviceType.Mobile;
 
     [Header("Touch Control Buttons")]
     [Tooltip("Parent panel holding all the on-screen buttons. If left empty, this GameObject itself is shown/hidden.")]
@@ -88,21 +91,18 @@ public class TouchControlsUI : MonoBehaviour
 
     private bool ShouldShowControls()
     {
-        switch (testOverride)
-        {
-            case DeviceTypeOverride.ForceShow:
-                return true;
+        if (!autoDetectDevice)
+            // Mobile and Both both show the touch buttons. Only TV hides
+            // them. Keyboard/gamepad input in PlayerControllerRoblox is
+            // never disabled by this — it always keeps working regardless
+            // of which device type is picked here, so "Both" is really just
+            // "show the buttons too, on top of keyboard/gamepad."
+            return deviceTypeOverride != DeviceType.TV;
 
-            case DeviceTypeOverride.ForceHide:
-                return false;
+        if (AndroidTV.IsAndroidOrFireTv())
+            return false; // TV - remote/gamepad only, no touch buttons
 
-            case DeviceTypeOverride.None:
-            default:
-                if (AndroidTV.IsAndroidOrFireTv())
-                    return false; // TV - remote/gamepad only, no touch buttons
-
-                return Application.isMobilePlatform; // phone/tablet - show buttons
-        }
+        return Application.isMobilePlatform; // phone/tablet - show buttons
     }
 
     private void WireHold(Button button, System.Action onDown, System.Action onUp)

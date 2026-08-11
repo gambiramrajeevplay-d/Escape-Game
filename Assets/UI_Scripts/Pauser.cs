@@ -55,7 +55,7 @@ public class Pauser : MonoBehaviour
             PauseLocked = true;
         }
 
-        inGameUI = GameObject.FindGameObjectWithTag("InGame");
+        LevelObject = GameObject.FindGameObjectWithTag("InGame");
 
         UpdateSoundIcon(true); // snap on start, no slide
     }
@@ -90,8 +90,8 @@ public class Pauser : MonoBehaviour
 
         PausePannel.SetActive(true);
 
-        if (inGameUI != null)
-            inGameUI.SetActive(false);
+        if (LevelObject != null)
+            LevelObject.SetActive(false);
 
         if (PauseButton != null)
             PauseButton.SetActive(false);
@@ -117,8 +117,8 @@ public class Pauser : MonoBehaviour
     {
         PausePannel.SetActive(false);
 
-        if (inGameUI != null)
-            inGameUI.SetActive(true);
+        if (LevelObject  != null)
+            LevelObject.SetActive(true);
 
         if (PauseButton != null)
         {

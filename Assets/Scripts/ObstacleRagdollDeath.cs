@@ -73,11 +73,20 @@ public class ObstacleRagdollDeath : MonoBehaviour
     [Header("Respawn")]
     public float respawnDelay = 2f;
 
+    [Header("Debug")]
+    [Tooltip("Logs exactly what collider/object caused Die() to run, and a stack trace. Turn off once you've found the cause.")]
+    public bool logDeathCause = true;
+
     private Transform[] ragdollBones;
     private Vector3[] defaultLocalPos;
     private Quaternion[] defaultLocalRot;
     void Start()
     {
+        if (ragdoll == null)
+        {
+            Debug.LogError("ObstacleRagdollDeath: 'Ragdoll' is not assigned in the Inspector. Death sequence will fail.", this);
+            return;
+        }
 
         ragdollBones = ragdoll.GetComponentsInChildren<Transform>(true);
 
@@ -111,13 +120,25 @@ public class ObstacleRagdollDeath : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (IsObstacle(other, out MoveCubeX moveCube))
+        {
+            if (logDeathCause)
+                Debug.Log($"ObstacleRagdollDeath: Die() triggered by OnTriggerEnter with '{other.name}' " +
+                    $"(tag='{other.tag}', MoveCubeX={(moveCube != null)}) at time {Time.time:F2}s, frame {Time.frameCount}.", this);
+
             Die(moveCube);
+        }
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (IsObstacle(hit.collider, out MoveCubeX moveCube))
+        {
+            if (logDeathCause)
+                Debug.Log($"ObstacleRagdollDeath: Die() triggered by OnControllerColliderHit with '{hit.collider.name}' " +
+                    $"(tag='{hit.collider.tag}', MoveCubeX={(moveCube != null)}) at time {Time.time:F2}s, frame {Time.frameCount}.", this);
+
             Die(moveCube);
+        }
     }
 
     public void Die(MoveCubeX sourceMoveCube = null)
