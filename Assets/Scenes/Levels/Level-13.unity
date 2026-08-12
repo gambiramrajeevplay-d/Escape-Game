@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 1137541}
   - component: {fileID: 1137540}
   - component: {fileID: 1137539}
+  - component: {fileID: 1137542}
   m_Layer: 0
   m_Name: Coin (19)
   m_TagString: Coin
@@ -220,6 +221,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1137537}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1137542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &19853184
 GameObject:
   m_ObjectHideFlags: 0
@@ -21329,6 +21343,7 @@ GameObject:
   - component: {fileID: 206939675}
   - component: {fileID: 206939674}
   - component: {fileID: 206939673}
+  - component: {fileID: 206939676}
   m_Layer: 0
   m_Name: Coin (9)
   m_TagString: Coin
@@ -21415,6 +21430,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 206939671}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &206939676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206939671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &210917356
 GameObject:
   m_ObjectHideFlags: 0
@@ -21992,6 +22020,7 @@ GameObject:
   - component: {fileID: 250279740}
   - component: {fileID: 250279739}
   - component: {fileID: 250279738}
+  - component: {fileID: 250279741}
   m_Layer: 0
   m_Name: Coin (14)
   m_TagString: Coin
@@ -22078,6 +22107,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 250279736}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &250279741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250279736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &270649715
 GameObject:
   m_ObjectHideFlags: 0
@@ -67012,6 +67054,7 @@ GameObject:
   - component: {fileID: 465070535}
   - component: {fileID: 465070534}
   - component: {fileID: 465070533}
+  - component: {fileID: 465070537}
   m_Layer: 0
   m_Name: Coin (2)
   m_TagString: Coin
@@ -67098,6 +67141,19 @@ Transform:
   m_Father: {fileID: 1126903687}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &465070537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465070532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &467530552
 GameObject:
   m_ObjectHideFlags: 0
@@ -77244,6 +77300,7 @@ GameObject:
   - component: {fileID: 515504916}
   - component: {fileID: 515504915}
   - component: {fileID: 515504914}
+  - component: {fileID: 515504917}
   m_Layer: 0
   m_Name: Coin (16)
   m_TagString: Coin
@@ -77330,6 +77387,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 515504912}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &515504917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515504912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &518502035
 GameObject:
   m_ObjectHideFlags: 0
@@ -77697,6 +77767,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerAnimator: {fileID: 0}
   winAnimation: Win
+  cutCamera: {fileID: 0}
+  cutCameraDelay: 0
+  disableCutCameraOnStart: 0
   respawnDelay: 2
 --- !u!1 &573544539
 GameObject:
@@ -87754,6 +87827,7 @@ GameObject:
   - component: {fileID: 615241516}
   - component: {fileID: 615241515}
   - component: {fileID: 615241514}
+  - component: {fileID: 615241517}
   m_Layer: 0
   m_Name: Coin (7)
   m_TagString: Coin
@@ -87840,6 +87914,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615241512}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &615241517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615241512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &624697409
 GameObject:
   m_ObjectHideFlags: 0
@@ -113138,6 +113225,8 @@ Transform:
   - {fileID: 926445882}
   - {fileID: 1915021801}
   - {fileID: 48195082}
+  - {fileID: 1781825538}
+  - {fileID: 1652525345}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -113153,6 +113242,7 @@ GameObject:
   - component: {fileID: 718640222}
   - component: {fileID: 718640221}
   - component: {fileID: 718640220}
+  - component: {fileID: 718640223}
   m_Layer: 0
   m_Name: Coin (22)
   m_TagString: Coin
@@ -113239,6 +113329,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 718640218}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &718640223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718640218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &725770970
 GameObject:
   m_ObjectHideFlags: 0
@@ -124233,6 +124336,7 @@ GameObject:
   - component: {fileID: 799680832}
   - component: {fileID: 799680831}
   - component: {fileID: 799680830}
+  - component: {fileID: 799680833}
   m_Layer: 0
   m_Name: Coin (20)
   m_TagString: Coin
@@ -124319,6 +124423,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 799680828}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &799680833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799680828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &807772415
 GameObject:
   m_ObjectHideFlags: 0
@@ -149003,6 +149120,7 @@ GameObject:
   - component: {fileID: 860985785}
   - component: {fileID: 860985784}
   - component: {fileID: 860985783}
+  - component: {fileID: 860985786}
   m_Layer: 0
   m_Name: Coin (18)
   m_TagString: Coin
@@ -149089,6 +149207,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860985781}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &860985786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860985781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &863158247
 GameObject:
   m_ObjectHideFlags: 0
@@ -158996,6 +159127,7 @@ GameObject:
   - component: {fileID: 885685249}
   - component: {fileID: 885685248}
   - component: {fileID: 885685247}
+  - component: {fileID: 885685250}
   m_Layer: 0
   m_Name: Coin (10)
   m_TagString: Coin
@@ -159082,6 +159214,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885685245}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &885685250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885685245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &903425038
 GameObject:
   m_ObjectHideFlags: 0
@@ -179036,6 +179181,7 @@ GameObject:
   - component: {fileID: 962943049}
   - component: {fileID: 962943048}
   - component: {fileID: 962943047}
+  - component: {fileID: 962943050}
   m_Layer: 0
   m_Name: Coin (24)
   m_TagString: Coin
@@ -179122,6 +179268,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 962943045}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &962943050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962943045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -184268,6 +184427,7 @@ GameObject:
   - component: {fileID: 968604428}
   - component: {fileID: 968604427}
   - component: {fileID: 968604426}
+  - component: {fileID: 968604429}
   m_Layer: 0
   m_Name: Coin (23)
   m_TagString: Coin
@@ -184354,6 +184514,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 968604424}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &968604429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968604424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &971958499
 GameObject:
   m_ObjectHideFlags: 0
@@ -265946,6 +266119,7 @@ GameObject:
   - component: {fileID: 1400806053}
   - component: {fileID: 1400806052}
   - component: {fileID: 1400806051}
+  - component: {fileID: 1400806054}
   m_Layer: 0
   m_Name: Coin (8)
   m_TagString: Coin
@@ -266032,6 +266206,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1400806049}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1400806054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400806049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1403012762
 GameObject:
   m_ObjectHideFlags: 0
@@ -291116,6 +291303,7 @@ GameObject:
   - component: {fileID: 1562722043}
   - component: {fileID: 1562722042}
   - component: {fileID: 1562722041}
+  - component: {fileID: 1562722044}
   m_Layer: 0
   m_Name: Coin (25)
   m_TagString: Coin
@@ -291202,6 +291390,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1562722039}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1562722044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562722039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1574669867
 GameObject:
   m_ObjectHideFlags: 0
@@ -291214,6 +291415,7 @@ GameObject:
   - component: {fileID: 1574669871}
   - component: {fileID: 1574669870}
   - component: {fileID: 1574669869}
+  - component: {fileID: 1574669872}
   m_Layer: 0
   m_Name: Coin (17)
   m_TagString: Coin
@@ -291300,6 +291502,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1574669867}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1574669872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574669867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1593096427
 GameObject:
   m_ObjectHideFlags: 0
@@ -291410,6 +291625,7 @@ GameObject:
   - component: {fileID: 1603407937}
   - component: {fileID: 1603407936}
   - component: {fileID: 1603407935}
+  - component: {fileID: 1603407938}
   m_Layer: 0
   m_Name: Coin (27)
   m_TagString: Coin
@@ -291496,6 +291712,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1603407933}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1603407938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603407933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1647815557
 GameObject:
   m_ObjectHideFlags: 0
@@ -291508,6 +291737,7 @@ GameObject:
   - component: {fileID: 1647815561}
   - component: {fileID: 1647815560}
   - component: {fileID: 1647815559}
+  - component: {fileID: 1647815562}
   m_Layer: 0
   m_Name: Coin (11)
   m_TagString: Coin
@@ -291594,6 +291824,150 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1647815557}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1647815562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647815557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
+--- !u!1 &1652525344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1652525345}
+  - component: {fileID: 1652525348}
+  - component: {fileID: 1652525347}
+  - component: {fileID: 1652525346}
+  m_Layer: 0
+  m_Name: CutCam
+  m_TagString: CutCam
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1652525345
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652525344}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.028, y: -5.12, z: -186.994}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 714132077}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1652525346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652525344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a908fa36b835442ac1b99b5e89e721, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTag: Player
+  target: {fileID: 0}
+  distance: 2
+  height: 1
+  curveAngle: -30
+  curveDuration: 2.5
+  movementCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  lookAtHeight: 0.5
+  lookSmoothSpeed: 8
+  clockwise: 1
+  playOnEnable: 0
+--- !u!81 &1652525347
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652525344}
+  m_Enabled: 1
+--- !u!20 &1652525348
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652525344}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.01
+  far clip plane: 1000
+  field of view: 40
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &1659220889
 GameObject:
   m_ObjectHideFlags: 0
@@ -306869,6 +307243,7 @@ GameObject:
   - component: {fileID: 1725369880}
   - component: {fileID: 1725369879}
   - component: {fileID: 1725369878}
+  - component: {fileID: 1725369881}
   m_Layer: 0
   m_Name: Coin (13)
   m_TagString: Coin
@@ -306955,6 +307330,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1725369876}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1725369881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1725369876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1728897708
 GameObject:
   m_ObjectHideFlags: 0
@@ -306967,6 +307355,7 @@ GameObject:
   - component: {fileID: 1728897711}
   - component: {fileID: 1728897710}
   - component: {fileID: 1728897709}
+  - component: {fileID: 1728897713}
   m_Layer: 0
   m_Name: Coin (1)
   m_TagString: Coin
@@ -307053,6 +307442,19 @@ Transform:
   m_Father: {fileID: 1126903687}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &1728897713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728897708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1729889919
 GameObject:
   m_ObjectHideFlags: 0
@@ -307624,6 +308026,134 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1781825537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1781825538}
+  - component: {fileID: 1781825539}
+  m_Layer: 0
+  m_Name: IngameMusic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1781825538
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781825537}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 714132077}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1781825539
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781825537}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: dc7a8eff5ca0aae48bf8838d97bfcb87, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1783545261
 GameObject:
   m_ObjectHideFlags: 0
@@ -307910,7 +308440,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1807683529}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.063, y: 0.375, z: -47.823}
+  m_LocalPosition: {x: -2.063, y: -0.15, z: -48.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -342785,6 +343315,7 @@ GameObject:
   - component: {fileID: 1932573470}
   - component: {fileID: 1932573469}
   - component: {fileID: 1932573468}
+  - component: {fileID: 1932573471}
   m_Layer: 0
   m_Name: Coin (12)
   m_TagString: Coin
@@ -342871,6 +343402,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1932573466}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1932573471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1932573466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1975559981
 GameObject:
   m_ObjectHideFlags: 0
@@ -352647,6 +353191,7 @@ GameObject:
   - component: {fileID: 1987404782}
   - component: {fileID: 1987404781}
   - component: {fileID: 1987404780}
+  - component: {fileID: 1987404783}
   m_Layer: 0
   m_Name: Coin (3)
   m_TagString: Coin
@@ -352733,6 +353278,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987404778}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &1987404783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987404778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &1987502308
 GameObject:
   m_ObjectHideFlags: 0
@@ -362735,6 +363293,7 @@ GameObject:
   - component: {fileID: 2023991890}
   - component: {fileID: 2023991889}
   - component: {fileID: 2023991888}
+  - component: {fileID: 2023991891}
   m_Layer: 0
   m_Name: Coin (15)
   m_TagString: Coin
@@ -362821,6 +363380,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023991886}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &2023991891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023991886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &2034138953
 GameObject:
   m_ObjectHideFlags: 0
@@ -362976,6 +363548,7 @@ GameObject:
   - component: {fileID: 2054803268}
   - component: {fileID: 2054803267}
   - component: {fileID: 2054803266}
+  - component: {fileID: 2054803269}
   m_Layer: 0
   m_Name: Coin (26)
   m_TagString: Coin
@@ -363062,6 +363635,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2054803264}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &2054803269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054803264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &2062792671
 GameObject:
   m_ObjectHideFlags: 0
@@ -363074,6 +363660,7 @@ GameObject:
   - component: {fileID: 2062792675}
   - component: {fileID: 2062792674}
   - component: {fileID: 2062792673}
+  - component: {fileID: 2062792676}
   m_Layer: 0
   m_Name: Coin (21)
   m_TagString: Coin
@@ -363160,6 +363747,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062792671}
   m_Mesh: {fileID: 6739027680649345306, guid: 17c55bddd8029f241b0306f766c55d8b, type: 3}
+--- !u!114 &2062792676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062792671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &2081521307
 GameObject:
   m_ObjectHideFlags: 0
@@ -368368,6 +368968,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerAnimator: {fileID: 0}
   winAnimation: Win
+  cutCamera: {fileID: 0}
+  cutCameraDelay: 0
+  disableCutCameraOnStart: 1
   respawnDelay: 2
 --- !u!23 &2123345059
 MeshRenderer:
@@ -383764,6 +384367,7 @@ GameObject:
   - component: {fileID: 5682677776574916353}
   - component: {fileID: 7581838686947496907}
   - component: {fileID: 8751398704068307109}
+  - component: {fileID: 8751398704068307110}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Coin
@@ -383828,3 +384432,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.0019999999, y: 0.00043697286, z: 0.0020001875}
   m_Center: {x: 1.1641532e-10, y: 1.4551919e-11, z: -3.4924605e-10}
+--- !u!114 &8751398704068307110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8230581677957476894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98d07c34b329cd428f7ba3a81b0755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30

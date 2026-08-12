@@ -21,6 +21,7 @@ TagManager:
   - Fail
   - Level
   - InGame
+  - CutCam
   layers:
   - Default
   - TransparentFX

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Pauser : MonoBehaviour
 {
@@ -12,22 +13,31 @@ public class Pauser : MonoBehaviour
     public GameObject LevelObject;
     public GameObject PauseButton;
 
+    [Header("Resume")]
+    [Tooltip("Delay before the player can move after pressing Resume.")]
+    public float resumeDelay = 0.5f;
+
     [Header("Sound UI")]
     public Image soundIcon;
     public Sprite sound_on;
     public Sprite sound_off;
 
     [Header("Sound Toggle Slide")]
-    [SerializeField] private RectTransform soundToggleRect;   // same object as soundIcon
+    [SerializeField] private RectTransform soundToggleRect;
     [SerializeField] private float onPosX = 40f;
     [SerializeField] private float offPosX = -40f;
     [SerializeField] private float slideDuration = 0.15f;
 
     private Coroutine slideRoutine;
+    private Coroutine resumeRoutine;
 
     public static bool PauseLocked = false;
 
-    private GameObject inGameUI;
+    private Camera resultCamera;
+
+    // =========================================================
+    // AWAKE
+    // =========================================================
 
     private void Awake()
     {
@@ -37,16 +47,32 @@ public class Pauser : MonoBehaviour
 
         AudioListener.volume =
             AudioManagerPause.IsMuted ? 0f : 1f;
+
+        if (GameManager.Instance != null)
+        {
+            resultCamera = GameManager.Instance.resultCamera;
+        }
     }
+
+    // =========================================================
+    // ENABLE
+    // =========================================================
 
     private void OnEnable()
     {
         if (PauseButton != null)
+        {
             PauseButton.SetActive(
-                !AndroidTV.IsAndroidOrFireTv());
+                !AndroidTV.IsAndroidOrFireTv()
+            );
+        }
 
-        UpdateSoundIcon(true); // snap on enable, no slide
+        UpdateSoundIcon(true);
     }
+
+    // =========================================================
+    // START
+    // =========================================================
 
     private void Start()
     {
@@ -55,10 +81,27 @@ public class Pauser : MonoBehaviour
             PauseLocked = true;
         }
 
-        LevelObject = GameObject.FindGameObjectWithTag("InGame");
+        if (LevelObject == null)
+        {
+            LevelObject =
+                GameObject.FindGameObjectWithTag("InGame");
+        }
 
-        UpdateSoundIcon(true); // snap on start, no slide
+        if (resultCamera == null &&
+            GameManager.Instance != null)
+        {
+            resultCamera =
+                GameManager.Instance.resultCamera;
+        }
+
+        DisableResultCamera();
+
+        UpdateSoundIcon(true);
     }
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
 
     private void Update()
     {
@@ -83,63 +126,258 @@ public class Pauser : MonoBehaviour
         }
     }
 
+    // =========================================================
+    // PAUSE
+    // =========================================================
+
     public void Pause()
     {
         if (PauseLocked)
             return;
 
-        PausePannel.SetActive(true);
+        Debug.Log("PAUSER: Pause pressed.");
 
-        if (LevelObject != null)
-            LevelObject.SetActive(false);
+        if (LevelObject == null)
+        {
+            LevelObject =
+                GameObject.FindGameObjectWithTag("InGame");
+        }
+
+        if (resultCamera == null &&
+            GameManager.Instance != null)
+        {
+            resultCamera =
+                GameManager.Instance.resultCamera;
+        }
+
+        // -----------------------------------------------------
+        // SHOW PAUSE PANEL
+        // -----------------------------------------------------
+
+        if (PausePannel != null)
+            PausePannel.SetActive(true);
 
         if (PauseButton != null)
             PauseButton.SetActive(false);
+
+        // -----------------------------------------------------
+        // STOP PLAYER CONTROL
+        // -----------------------------------------------------
 
         PlayerControllerRoblox player =
             FindObjectOfType<PlayerControllerRoblox>();
 
         if (player != null)
+        {
             player.canControl = false;
+        }
+
+        // -----------------------------------------------------
+        // PAUSE TIME / AUDIO
+        // -----------------------------------------------------
 
         Time.timeScale = 0f;
         AudioListener.pause = true;
 
         UpdateSoundIcon();
 
-        if (GameManager.Instance.resultCamera != null)
+        // -----------------------------------------------------
+        // DISABLE LEVEL
+        // -----------------------------------------------------
+
+        if (LevelObject != null)
         {
-            GameManager.Instance.resultCamera.gameObject.SetActive(true);
+            Debug.Log(
+                "PAUSER: Disabling Level: " +
+                LevelObject.name
+            );
+
+            LevelObject.SetActive(false);
         }
+        else
+        {
+            Debug.LogWarning(
+                "PAUSER: LevelObject not found. " +
+                "Make sure the Level Game Object has the 'InGame' tag."
+            );
+        }
+
+        // -----------------------------------------------------
+        // ENABLE RESULT CAMERA
+        // -----------------------------------------------------
+
+        EnableResultCamera();
+
+        Debug.Log("PAUSER: Pause complete.");
     }
+
+    // =========================================================
+    // RESUME
+    // =========================================================
 
     public void Resume()
     {
-        PausePannel.SetActive(false);
-
-        if (LevelObject  != null)
-            LevelObject.SetActive(true);
-
-        if (PauseButton != null)
+        if (resumeRoutine != null)
         {
-            PauseButton.SetActive(
-                !AndroidTV.IsAndroidOrFireTv());
+            StopCoroutine(resumeRoutine);
         }
+
+        resumeRoutine =
+            StartCoroutine(ResumeRoutine());
+    }
+
+    // =========================================================
+    // RESUME ROUTINE
+    // =========================================================
+
+    private IEnumerator ResumeRoutine()
+    {
+        Debug.Log("PAUSER: Resume pressed.");
+
+        // -----------------------------------------------------
+        // HIDE PAUSE PANEL
+        // -----------------------------------------------------
+
+        if (PausePannel != null)
+            PausePannel.SetActive(false);
+
+        // -----------------------------------------------------
+        // ENABLE LEVEL
+        // -----------------------------------------------------
+
+        if (LevelObject != null)
+        {
+            LevelObject.SetActive(true);
+        }
+
+        // -----------------------------------------------------
+        // GET PLAYER
+        // -----------------------------------------------------
 
         PlayerControllerRoblox player =
             FindObjectOfType<PlayerControllerRoblox>();
 
         if (player != null)
-            player.canControl = true;
+        {
+            // IMPORTANT:
+            // Stop the old jump/movement from continuing.
+            player.ResetMovementAfterPause();
+
+            // Keep controls disabled during the delay.
+            player.canControl = false;
+        }
+
+        // -----------------------------------------------------
+        // DISABLE RESULT CAMERA
+        // -----------------------------------------------------
+
+        DisableResultCamera();
+
+        // -----------------------------------------------------
+        // KEEP TIME PAUSED DURING DELAY
+        // -----------------------------------------------------
+
+        Time.timeScale = 0f;
+
+        // WaitForSeconds would NOT work here because
+        // Time.timeScale is zero.
+        yield return new WaitForSecondsRealtime(
+            resumeDelay
+        );
+
+        // -----------------------------------------------------
+        // RESUME GAME
+        // -----------------------------------------------------
 
         Time.timeScale = 1f;
         AudioListener.pause = false;
 
-        if (GameManager.Instance.resultCamera != null)
+        // Give control back AFTER the delay.
+        if (player != null)
         {
-            GameManager.Instance.resultCamera.gameObject.SetActive(false);
+            player.canControl = true;
         }
+
+        if (PauseButton != null)
+        {
+            PauseButton.SetActive(
+                !AndroidTV.IsAndroidOrFireTv()
+            );
+        }
+
+        Debug.Log(
+            "PAUSER: Resume complete after " +
+            resumeDelay +
+            " seconds."
+        );
+
+        resumeRoutine = null;
     }
+
+    // =========================================================
+    // RESULT CAMERA
+    // =========================================================
+
+    private void EnableResultCamera()
+    {
+        if (resultCamera == null)
+        {
+            Debug.LogWarning(
+                "PAUSER: Result Camera is not assigned in GameManager."
+            );
+
+            return;
+        }
+
+        // Result Camera must NOT be a child of LevelObject.
+        if (LevelObject != null &&
+            resultCamera.transform.IsChildOf(
+                LevelObject.transform))
+        {
+            Debug.LogWarning(
+                "PAUSER: Result Camera is inside the LevelObject. " +
+                "Move it outside the Level hierarchy."
+            );
+
+            return;
+        }
+
+        Camera[] allCameras =
+            FindObjectsOfType<Camera>();
+
+        foreach (Camera cam in allCameras)
+        {
+            if (cam == null)
+                continue;
+
+            if (cam != resultCamera)
+                cam.enabled = false;
+        }
+
+        resultCamera.gameObject.SetActive(true);
+        resultCamera.enabled = true;
+
+        Debug.Log(
+            "PAUSER: Result Camera enabled."
+        );
+    }
+
+    // =========================================================
+    // DISABLE RESULT CAMERA
+    // =========================================================
+
+    private void DisableResultCamera()
+    {
+        if (resultCamera == null)
+            return;
+
+        resultCamera.enabled = false;
+        resultCamera.gameObject.SetActive(false);
+    }
+
+    // =========================================================
+    // MAIN MENU
+    // =========================================================
 
     public void MM()
     {
@@ -150,6 +388,10 @@ public class Pauser : MonoBehaviour
 
         SceneManager.LoadScene("UI");
     }
+
+    // =========================================================
+    // SOUND
+    // =========================================================
 
     public void ToggleSound()
     {
@@ -162,7 +404,7 @@ public class Pauser : MonoBehaviour
         UpdateSoundIcon();
     }
 
-    void UpdateSoundIcon(bool instant = false)
+    private void UpdateSoundIcon(bool instant = false)
     {
         if (soundIcon != null)
         {
@@ -174,38 +416,69 @@ public class Pauser : MonoBehaviour
 
         if (soundToggleRect != null)
         {
-            float targetX = AudioManagerPause.IsMuted ? offPosX : onPosX;
+            float targetX =
+                AudioManagerPause.IsMuted
+                    ? offPosX
+                    : onPosX;
 
             if (slideRoutine != null)
                 StopCoroutine(slideRoutine);
 
-            if (!instant && gameObject.activeInHierarchy)
+            if (!instant &&
+                gameObject.activeInHierarchy)
             {
-                slideRoutine = StartCoroutine(SlideToggle(targetX));
+                slideRoutine =
+                    StartCoroutine(
+                        SlideToggle(targetX)
+                    );
             }
             else
             {
-                Vector2 pos = soundToggleRect.anchoredPosition;
-                soundToggleRect.anchoredPosition = new Vector2(targetX, pos.y);
+                Vector2 pos =
+                    soundToggleRect.anchoredPosition;
+
+                soundToggleRect.anchoredPosition =
+                    new Vector2(
+                        targetX,
+                        pos.y
+                    );
             }
         }
     }
 
-    private System.Collections.IEnumerator SlideToggle(float targetX)
+    private IEnumerator SlideToggle(float targetX)
     {
-        Vector2 start = soundToggleRect.anchoredPosition;
-        Vector2 end = new Vector2(targetX, start.y);
+        Vector2 start =
+            soundToggleRect.anchoredPosition;
+
+        Vector2 end =
+            new Vector2(
+                targetX,
+                start.y
+            );
 
         float t = 0f;
+
         while (t < slideDuration)
         {
-            t += Time.unscaledDeltaTime; // unscaled - works even when paused (Time.timeScale = 0)
-            soundToggleRect.anchoredPosition = Vector2.Lerp(start, end, t / slideDuration);
+            t += Time.unscaledDeltaTime;
+
+            soundToggleRect.anchoredPosition =
+                Vector2.Lerp(
+                    start,
+                    end,
+                    t / slideDuration
+                );
+
             yield return null;
         }
 
         soundToggleRect.anchoredPosition = end;
     }
+
+    // =========================================================
+    // PAUSE LOCK
+    // =========================================================
 
     public static void LockPause()
     {
@@ -213,12 +486,13 @@ public class Pauser : MonoBehaviour
 
         if (instance != null)
         {
-            instance.PausePannel.SetActive(false);
+            if (instance.PausePannel != null)
+                instance.PausePannel.SetActive(false);
 
             if (instance.LevelObject != null)
-            {
                 instance.LevelObject.SetActive(true);
-            }
+
+            instance.DisableResultCamera();
         }
     }
 
@@ -230,14 +504,16 @@ public class Pauser : MonoBehaviour
         PauseLocked = false;
     }
 
+    // =========================================================
+    // APPLICATION FOCUS
+    // =========================================================
+
     private void OnApplicationFocus(bool focus)
     {
         if (!focus)
         {
             if (!PauseLocked)
-            {
                 Pause();
-            }
         }
     }
 }

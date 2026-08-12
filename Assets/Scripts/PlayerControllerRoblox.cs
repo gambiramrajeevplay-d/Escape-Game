@@ -211,10 +211,32 @@ public class PlayerControllerRoblox : MonoBehaviour
 
         if (!canControl)
         {
+            // Stop horizontal player movement.
+            currentMoveVelocity = Vector3.zero;
+
+            // Continue gravity so the player can finish falling
+            // if the trigger was entered while jumping.
+            if (!controller.isGrounded)
+            {
+                float appliedGravity = gravity *
+                    (velocity.y < 0f ? fallMultiplier : 1f);
+
+                velocity.y += appliedGravity * Time.deltaTime;
+            }
+            else
+            {
+                velocity.y = groundedStickForce;
+            }
+
+            // Keep the CharacterController moving vertically even
+            // though player input is disabled.
+            controller.Move(Vector3.up * velocity.y * Time.deltaTime);
+
+            // Update animation based on the actual grounded state.
             UpdateAnimator(controller.isGrounded);
+
             return;
         }
-
         bool isGrounded = controller.isGrounded;
 
         if (isGrounded && velocity.y < 0f)
@@ -576,7 +598,36 @@ public class PlayerControllerRoblox : MonoBehaviour
             footstepSource.Stop();
         }
     }
+    public void ResetMovementAfterPause()
+    {
+        // Stop the previous jump.
+        velocity = Vector3.zero;
 
+        // Stop horizontal movement.
+        currentMoveVelocity = Vector3.zero;
+
+        // Reset jump state.
+        jumpStarted = false;
+        jumpsUsed = 0;
+        jumpForwardSpeed = 0f;
+
+        // Reset grounded animation state.
+        ungroundedTimer = 0f;
+
+        // Stop footsteps.
+        if (footstepSource != null &&
+            footstepSource.isPlaying)
+        {
+            footstepSource.Stop();
+        }
+
+        // Make sure animator doesn't remain in jump/run state.
+        if (animator != null)
+        {
+            animator.SetBool(isRunningHash, false);
+            animator.SetBool(isJumpingHash, false);
+        }
+    }
     public void Respawn()
     {
         controller.enabled = false;
@@ -664,4 +715,6 @@ public class PlayerControllerRoblox : MonoBehaviour
 
         return closest;
     }
+   
+
 }

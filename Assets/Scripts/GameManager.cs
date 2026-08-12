@@ -1,4 +1,4 @@
-using Script;
+﻿using Script;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -257,20 +257,18 @@ public class GameManager : MonoBehaviour
 
     void UpdateRewardUI(int reward, int coinsCollected)
     {
+        // Show the combined total.
         // Example:
-        // 2 coins collected + 100 level reward
-        // Displays: 2+100
+        // 2 collected + 100 reward = 102
 
-        string combinedText =
-            coinsCollected + "+" + reward;
+        int totalReward = coinsCollected + reward;
 
         if (winRewardText != null)
-            winRewardText.text = combinedText;
+            winRewardText.text = totalReward.ToString();
 
         if (loseRewardText != null)
-            loseRewardText.text = combinedText;
+            loseRewardText.text = totalReward.ToString();
     }
-
     // =========================================================
     // LEVEL UNLOCK
     // =========================================================
@@ -442,6 +440,10 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         AudioListener.pause = false;
+
+        // 🔥 SHOW SUBSCRIPTION AFTER GAMEPLAY
+        PlayerPrefs.SetInt("ShowSubscriptionPanel", 1);
+        PlayerPrefs.Save();
 
         SceneManager.LoadScene(0);
     }

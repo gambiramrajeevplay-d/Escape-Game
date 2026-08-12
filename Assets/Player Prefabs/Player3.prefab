@@ -3666,11 +3666,11 @@ MonoBehaviour:
   isRunningParam: isRunning
   isJumpingParam: isJumping
   footstepSource: {fileID: 0}
-  footstepClip: {fileID: 0}
+  footstepClip: {fileID: 8300000, guid: a6ade982445db60408004d37e2533df3, type: 3}
   walkFootstepPitch: 1
   sprintFootstepPitch: 1.4
   footstepVolume: 0.8
-  jumpClip: {fileID: 0}
+  jumpClip: {fileID: 8300000, guid: fb2200049b5ae504e818871f08d9e4b9, type: 3}
   jumpSoundVolume: 1
   jumpForwardDistance: 0
   groundedGraceTime: 0.15
@@ -3721,6 +3721,7 @@ MonoBehaviour:
   deathSoundVolume: 1
   deathSound3D: 0
   respawnDelay: 2
+  logDeathCause: 1
 --- !u!114 &9102747770749539639
 MonoBehaviour:
   m_ObjectHideFlags: 0

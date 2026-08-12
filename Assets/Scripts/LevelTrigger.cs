@@ -1,119 +1,370 @@
 using UnityEngine;
+using System.Collections;
+
 public class LevelTrigger : MonoBehaviour
 {
     [Header("Player Animation")]
     public Animator playerAnimator;
+
     [Tooltip("Animation Trigger/Bool name to play on level complete.")]
     public string winAnimation = "Win";
+
+    [Header("Cut Camera")]
+    [Tooltip("Automatically finds the CutCameraController, even if CutCam is disabled.")]
+    public Camera cutCamera;
+
+    [Tooltip("Delay before starting the cinematic camera.")]
+    public float cutCameraDelay = 0f;
+
+    [Tooltip("Automatically disable CutCam when the scene starts.")]
+    public bool disableCutCameraOnStart = true;
+
+    private CutCameraController cutCameraController;
+
     private bool triggered;
     private PlayerControllerRoblox playerController;
+
     [Header("Respawn")]
     public float respawnDelay = 0.5f;
+
     private ObstacleRagdollDeath ragdollDeath;
 
-    // No Start()-time lookup here on purpose. If the player is spawned at
-    // runtime (e.g. by a spawner script) after this trigger's Start() runs,
-    // GameObject.FindGameObjectWithTag("MainPlayer") returns null and these
-    // references would stay null forever, silently skipping all pass/fail
-    // logic. Instead, everything is resolved lazily the first time a trigger
-    // actually fires, straight from the collider involved — see TryTrigger.
+    // =========================================================
+    // AWAKE
+    // =========================================================
+
+    private void Awake()
+    {
+        // Find the CutCameraController even if the CutCam
+        // GameObject is already disabled.
+        FindCutCameraController();
+
+        if (disableCutCameraOnStart)
+        {
+            DisableCutCamera();
+        }
+    }
+
+    // =========================================================
+    // FIND CUT CAMERA
+    // =========================================================
+
+    private void FindCutCameraController()
+    {
+        // Find inactive CutCameraController too.
+        CutCameraController[] cameras =
+            Resources.FindObjectsOfTypeAll<CutCameraController>();
+
+        foreach (CutCameraController controller in cameras)
+        {
+            if (controller == null)
+                continue;
+
+            // Ignore assets/prefabs that are not actually
+            // part of the current scene.
+            if (!controller.gameObject.scene.IsValid())
+                continue;
+
+            cutCameraController = controller;
+
+            cutCamera =
+                controller.GetComponent<Camera>();
+
+            Debug.Log(
+                "LevelTrigger: CutCam found through " +
+                "CutCameraController: " +
+                controller.gameObject.name,
+                this
+            );
+
+            return;
+        }
+
+        Debug.LogWarning(
+            "LevelTrigger: Could not find a " +
+            "CutCameraController in the scene.",
+            this
+        );
+    }
+
+    // =========================================================
+    // TRIGGER
+    // =========================================================
 
     private void OnTriggerEnter(Collider other)
     {
         TryTrigger(other);
     }
-    /// <summary>
-    /// The actual trigger-fire logic, pulled out of OnTriggerEnter so it can
-    /// also be called manually by PlayerControllerRoblox's tunneling-safety
-    /// sweep. On low-end/TV hardware a slow frame means a big Move() step,
-    /// which can occasionally skip clean over a thin trigger volume within
-    /// one frame — Unity's normal trigger check is discrete (once per frame)
-    /// and never sees an overlap, so OnTriggerEnter silently doesn't fire.
-    /// The sweep check in PlayerControllerRoblox catches that case and calls
-    /// this directly instead.
-    /// </summary>
+
     public void TryTrigger(Collider other)
     {
         if (triggered)
             return;
+
         if (!other.CompareTag("MainPlayer"))
             return;
+
         triggered = true;
 
-        // Resolve everything off the collider that actually entered, using
-        // GetComponentInParent rather than GetComponent — if the player's
-        // collider lives on a child object (a feet/capsule collider under a
-        // root rig, say) while PlayerControllerRoblox sits on the parent,
-        // a plain GetComponent would come back null and silently no-op the
-        // whole trigger. Falls back to the cached fields first so repeated
-        // triggers with the same already-known player don't redo the lookup.
-        PlayerControllerRoblox controllerToUse = playerController != null
-            ? playerController
-            : other.GetComponentInParent<PlayerControllerRoblox>();
+        // ---------------------------------------------------------
+        // RESOLVE PLAYER REFERENCES
+        // ---------------------------------------------------------
 
-        Animator animatorToUse = playerAnimator != null
-            ? playerAnimator
-            : other.GetComponentInParent<Animator>();
+        PlayerControllerRoblox controllerToUse =
+            playerController != null
+                ? playerController
+                : other.GetComponentInParent<PlayerControllerRoblox>();
 
-        ObstacleRagdollDeath ragdollToUse = ragdollDeath != null
-            ? ragdollDeath
-            : other.GetComponentInParent<ObstacleRagdollDeath>();
+        Animator animatorToUse =
+            playerAnimator != null
+                ? playerAnimator
+                : other.GetComponentInParent<Animator>();
 
-        // Cache whatever we found so future triggers (this one resetting via
-        // RespawnAfterDelay, or a different LevelTrigger later in the level)
-        // skip the GetComponentInParent calls entirely.
-        if (playerController == null) playerController = controllerToUse;
-        if (playerAnimator == null) playerAnimator = animatorToUse;
-        if (ragdollDeath == null) ragdollDeath = ragdollToUse;
+        ObstacleRagdollDeath ragdollToUse =
+            ragdollDeath != null
+                ? ragdollDeath
+                : other.GetComponentInParent<ObstacleRagdollDeath>();
+
+        if (playerController == null)
+            playerController = controllerToUse;
+
+        if (playerAnimator == null)
+            playerAnimator = animatorToUse;
+
+        if (ragdollDeath == null)
+            ragdollDeath = ragdollToUse;
+
+        // ---------------------------------------------------------
+        // STOP PLAYER CONTROL
+        // ---------------------------------------------------------
 
         if (controllerToUse != null)
         {
             controllerToUse.canControl = false;
 
-            // canControl = false stops HandleMovement from running, but
-            // UpdateAnimator (and the UpdateFootsteps call inside it) still
-            // run every frame off whatever currentMoveVelocity was last set
-            // to — so without this, the footstep loop just keeps looping
-            // forever after the player wins/fails instead of cutting off.
             if (controllerToUse.footstepSource != null)
-                controllerToUse.footstepSource.Stop();
-            if (controllerToUse.footstepSource != null)
-                controllerToUse.footstepSource.loop = false;
-        }
-        if (CompareTag("Pass Trigger"))
-        {
-            if (animatorToUse != null)
-                animatorToUse.SetTrigger(winAnimation);
-            GameManager.Instance.LevelPassed();
-        }
-        else if (CompareTag("Fail Trigger"))
-        {
-            if (controllerToUse != null)
             {
-                controllerToUse.respawnCount++;
-                if (controllerToUse.respawnCount >= controllerToUse.maxRespawns)
-                {
-                    if (ragdollDeath == null)
-                        ragdollDeath = other.GetComponentInParent<ObstacleRagdollDeath>();
-                    if (ragdollDeath != null)
-                        ragdollDeath.Die();
-                    else
-                        GameManager.Instance.LevelFailed();
-                }
-                else
-                {
-                    StartCoroutine(RespawnAfterDelay(controllerToUse));
-                }
+                controllerToUse.footstepSource.Stop();
+                controllerToUse.footstepSource.loop = false;
             }
         }
+
+        // ---------------------------------------------------------
+        // PASS
+        // ---------------------------------------------------------
+
+        if (CompareTag("Pass Trigger"))
+        {
+            StartCoroutine(
+                PassSequence(animatorToUse)
+            );
+        }
+
+        // ---------------------------------------------------------
+        // FAIL
+        // ---------------------------------------------------------
+
+        else if (CompareTag("Fail Trigger"))
+        {
+            HandleFail(
+                controllerToUse,
+                other
+            );
+        }
     }
-    private System.Collections.IEnumerator RespawnAfterDelay(PlayerControllerRoblox controllerToUse)
+
+    // =========================================================
+    // PASS SEQUENCE
+    // =========================================================
+
+    private IEnumerator PassSequence(
+        Animator animatorToUse)
     {
-        yield return new WaitForSeconds(respawnDelay);
+        // Optional delay.
+        if (cutCameraDelay > 0f)
+        {
+            yield return new WaitForSeconds(
+                cutCameraDelay
+            );
+        }
+
+        // ---------------------------------------------------------
+        // FIND CUT CAMERA AGAIN IF NEEDED
+        // ---------------------------------------------------------
+
+        if (cutCameraController == null)
+        {
+            FindCutCameraController();
+        }
+
+        // ---------------------------------------------------------
+        // ENABLE CUT CAMERA
+        // ---------------------------------------------------------
+
+        EnableCutCamera();
+
+        // ---------------------------------------------------------
+        // START CAMERA CINEMATIC
+        // ---------------------------------------------------------
+
+        if (cutCameraController != null)
+        {
+            cutCameraController.StartCinematic(
+                playerController != null
+                    ? playerController.transform
+                    : null
+            );
+        }
+        else
+        {
+            Debug.LogWarning(
+                "LevelTrigger: CutCameraController not found.",
+                this
+            );
+        }
+
+        // ---------------------------------------------------------
+        // PLAY WIN ANIMATION
+        // ---------------------------------------------------------
+
+        if (animatorToUse != null)
+        {
+            animatorToUse.SetTrigger(
+                winAnimation
+            );
+        }
+
+        // ---------------------------------------------------------
+        // LEVEL PASSED
+        // ---------------------------------------------------------
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.LevelPassed();
+        }
+    }
+
+    // =========================================================
+    // FAIL
+    // =========================================================
+
+    private void HandleFail(
+        PlayerControllerRoblox controllerToUse,
+        Collider other)
+    {
+        if (controllerToUse == null)
+            return;
+
+        controllerToUse.respawnCount++;
+
+        if (controllerToUse.respawnCount >=
+            controllerToUse.maxRespawns)
+        {
+            if (ragdollDeath == null)
+            {
+                ragdollDeath =
+                    other.GetComponentInParent<
+                        ObstacleRagdollDeath>();
+            }
+
+            if (ragdollDeath != null)
+            {
+                ragdollDeath.Die();
+            }
+            else if (GameManager.Instance != null)
+            {
+                GameManager.Instance.LevelFailed();
+            }
+        }
+        else
+        {
+            StartCoroutine(
+                RespawnAfterDelay(
+                    controllerToUse
+                )
+            );
+        }
+    }
+
+    // =========================================================
+    // ENABLE CUT CAMERA
+    // =========================================================
+
+    private void EnableCutCamera()
+    {
+        // If reference was lost, find it again.
+        if (cutCameraController == null)
+        {
+            FindCutCameraController();
+        }
+
+        if (cutCameraController == null)
+        {
+            Debug.LogWarning(
+                "LevelTrigger: CutCameraController not found.",
+                this
+            );
+
+            return;
+        }
+
+        // Get camera from the controller's GameObject.
+        if (cutCamera == null)
+        {
+            cutCamera =
+                cutCameraController.GetComponent<Camera>();
+        }
+
+        // IMPORTANT:
+        // The GameObject is currently inactive.
+        // Enable it FIRST.
+        cutCameraController.gameObject.SetActive(true);
+
+        // Then enable the Camera component.
+        if (cutCamera != null)
+        {
+            cutCamera.enabled = true;
+        }
+
+        Debug.Log(
+            "LevelTrigger: CutCam ENABLED.",
+            this
+        );
+    }
+
+    // =========================================================
+    // DISABLE CUT CAMERA
+    // =========================================================
+
+    private void DisableCutCamera()
+    {
+        if (cutCameraController != null)
+        {
+            cutCameraController.gameObject.SetActive(false);
+        }
+        else if (cutCamera != null)
+        {
+            cutCamera.enabled = false;
+            cutCamera.gameObject.SetActive(false);
+        }
+    }
+
+    // =========================================================
+    // RESPAWN
+    // =========================================================
+
+    private IEnumerator RespawnAfterDelay(
+        PlayerControllerRoblox controllerToUse)
+    {
+        yield return new WaitForSeconds(
+            respawnDelay
+        );
+
         if (controllerToUse != null)
         {
             controllerToUse.Respawn();
         }
+
         triggered = false;
     }
 }
