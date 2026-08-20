@@ -21817,7 +21817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a5f511b0d8142cba0aeb92d0b264c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  productId: annually_reversegame
+  productId: weekly_reversegame
   buttonType: 0
   consumePurchase: 1
   onTransactionsRestored:
@@ -33785,7 +33785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a5f511b0d8142cba0aeb92d0b264c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  productId: annually_reversegame
+  productId: quaterly_reversegame
   buttonType: 0
   consumePurchase: 1
   onTransactionsRestored:
@@ -35804,7 +35804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a5f511b0d8142cba0aeb92d0b264c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  productId: annually_reversegame
+  productId: monthly_reversegame
   buttonType: 0
   consumePurchase: 1
   onTransactionsRestored:
@@ -44742,7 +44742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a5f511b0d8142cba0aeb92d0b264c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  productId: store3_reversereality
+  productId: store4_reversereality
   buttonType: 0
   consumePurchase: 1
   onTransactionsRestored:
